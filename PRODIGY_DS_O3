@@ -1,0 +1,66 @@
+import numpy as np
+import pandas as pd
+import os
+for dirname, _, filenames in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.metrics import mean_squared_error
+from matplotlib.colors import ListedColormap
+file_path = ('/content/bank-additional-full.csv.zip')
+df = pd.read_csv(file_path, sep=';')
+df
+df.isnull().sum()
+df.describe()
+df.y.value_counts()
+no=df[df['y']=='no']
+no.age.describe()
+yes=df[df['y']=='yes']
+yes.age.describe()
+no_sample=no.sample(n=4640,random_state=1)
+new_data = pd.concat([no_sample, yes])
+new_data
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
+encoder = LabelEncoder()
+data_df = new_data.apply(encoder.fit_transform)
+data_df
+data_df.y.value_counts()
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+normalized_data = scaler.fit_transform(data_df)
+normalized_data
+import numpy as np
+corre = np.corrcoef(normalized_data, rowvar=False)
+plt.figure(figsize=(30, 20))
+corre_rounded = np.round(corre,2)
+sns.heatmap(corre_rounded, cmap='RdBu', annot=True)
+w=data_df.iloc[:,[4,7,10,11,12,15,16,18,19]]
+x=scaler.fit_transform(w)
+x
+y=data_df.iloc[:,-1]
+y
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB, MultinomialNB
+from sklearn.metrics import accuracy_score, recall_score
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=22)
+tree=DecisionTreeClassifier()
+tree.fit(x_train, y_train)
+pred_3=tree.predict(x_test)
+acc=accuracy_score(y_test,pred_3)
+print('accuracy is : ',acc)
